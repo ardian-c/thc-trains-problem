@@ -1,4 +1,5 @@
 import { Node } from "./node";
+import { Queue } from "./queue";
 
 export class Graph<T> {
     vertices: Set<T|string> = new Set();
@@ -30,6 +31,7 @@ export class Graph<T> {
         const destinationNode = this.addNode(destination);
 
         sourceNode.addAdjacent(destinationNode, weight);
+
         if(source !== destination) {
             const vertices = [...this.vertices];
             const sourceIndex = vertices.indexOf(source);
@@ -41,6 +43,52 @@ export class Graph<T> {
         }
     }
 
+    // Dijkstra shortest path algorithm
+    shortestPath(start: string, destination: string) {
+        let verticesNr = this.vertices.size;
+        const startIndex = [...this.vertices].indexOf(start);
+        const destinationIndex = [...this.vertices].indexOf(destination); 
+        let shortestDistances = new Array(verticesNr);
+        let visited = new Array(verticesNr);
+        
+        for(let i = 0; i < verticesNr; i++) {
+            shortestDistances[i] = Infinity;
+            visited[verticesNr] = false;
+        }
+        // distance to self, 0
+        shortestDistances[startIndex] = 0;
+        let parents = new Array(verticesNr);
+        parents[startIndex] = -1;
+
+        for(let i = 1; i < verticesNr; i++) {
+            let nearestVertex = -1;
+            let shortestDistance = Infinity;
+            for(let j = 0; j < verticesNr; j++) {
+                if(!visited[j] && shortestDistances[j] < shortestDistance) {
+                    nearestVertex = j;
+                    shortestDistance = shortestDistances[j];
+                }
+            }
+            visited[nearestVertex] = true;
+
+            for(let vIndex = 0; vIndex < verticesNr; vIndex++) {
+                let edgeDistance = this.adjacencyMatrix[nearestVertex][vIndex];
+
+                if(edgeDistance > 0 && ((shortestDistance + edgeDistance) < shortestDistances[vIndex])) {
+                    parents[vIndex] = nearestVertex;
+                    shortestDistances[vIndex] = shortestDistance + edgeDistance;
+                }
+            }
+        }
+        // TODO: handle cyclic paths, B -> B currently returns 0, as distance to itself is 0. 
+        return shortestDistances[destinationIndex];
+    }
+
+    countRoutesWithNStops(start:string, destination:string, stops:number):number {
+        // TODO: check how many routes exists with start and destination and have less than N stops
+        return 0;
+    }
+
     findDistanceForPathString(path: string):number|string {
         const vertices = [...this.vertices];
         const routes = path.split('-');
@@ -49,13 +97,13 @@ export class Graph<T> {
             const sourceIndex = vertices.indexOf(routes[i]);
             const destinationIndex = vertices.indexOf(routes[i+1]);
             distance += this.adjacencyMatrix[sourceIndex][destinationIndex];
-            // console.log(':: Distance between :: ', routes[i], routes[i+1], distance);
         }
 
         if(distance === Infinity) { return 'NO SUCH ROUTE'; }
 
         return distance;
     }
+ 
 
     printFullGraph() {
         this.nodes.forEach((node) => {

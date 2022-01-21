@@ -18,9 +18,13 @@ fs.readFile(inputFilePath, 'utf-8', (err, data) => {
         graph.addEdge(item[0], item[1], parseInt(item[2]));
     });
 
-    console.log('1. Distance for A-B-C graph: ', graph.findDistanceForPathString('A-B-C'));
-    console.log('2. Distance for A-D graph: ', graph.findDistanceForPathString('A-D'));
-    console.log('3. Distance for A-D-C graph: ', graph.findDistanceForPathString('A-D-C'));
-    console.log('4. Distance for A-E-B-C-D graph: ', graph.findDistanceForPathString('A-E-B-C-D'));
-    console.log('5. Distance for A-E-D graph: ', graph.findDistanceForPathString('A-E-D'));
+    console.log('Output #1: ', graph.findDistanceForPathString('A-B-C'));
+    console.log('Output #2: ', graph.findDistanceForPathString('A-D'));
+    console.log('Output #3: ', graph.findDistanceForPathString('A-D-C'));
+    console.log('Output #4: ', graph.findDistanceForPathString('A-E-B-C-D'));
+    console.log('Output #5: ', graph.findDistanceForPathString('A-E-D'));
+    // console.log('Output #6: ', graph.countRoutesWithNStops('C', 'C', 3))
+    // console.log('Output #7: ', graph.countRoutesWithNStops('A', 'C', 4, true))
+    console.log('Output #8: ', graph.shortestPath('A', 'C'));
+    console.log('Output #9: ', graph.shortestPath('B', 'B'));
 });
